@@ -86,6 +86,10 @@ jobs:
       - name: Check a commit reaches the cluster
         working-directory: examples/local
         run: sudo podman exec -i circuit-flux sh -s < check.sh
+      - name: Show the SSH server's side of a failed clone
+        if: failure()
+        run: |
+          sudo podman exec circuit-flux sh -c 'journalctl -u sshd -u ssh --no-pager | tail -60; sshd -T | grep -iE "penalt|maxstartups|hostkey|^kex|^ciphers|^macs"; update-crypto-policies --show; ss -tlnp | grep -E ":22 "' || true
       - name: Show what's running
         if: failure()
         run: sudo podman exec circuit-flux sh -c 'k3s kubectl get pods -A; k3s kubectl -n flux-system get gitrepository,kustomization -o yaml; journalctl -u k3s --no-pager -n 50' || true
