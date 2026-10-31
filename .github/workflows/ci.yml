@@ -60,6 +60,11 @@ jobs:
         env: *gh
         run: *install
       # A container can't load kernel modules, so the runner loads k3s's.
+      # Ubuntu's AppArmor profile for unix_chkpwd also confines the one in a
+      # container, and doesn't grant the capability that reads Rocky's
+      # mode-0000 /etc/shadow, so sshd refuses the git user there.
+      - name: Unload the runner's unix_chkpwd AppArmor profile
+        run: sudo apparmor_parser -R /etc/apparmor.d/unix-chkpwd
       - run: sudo modprobe -a br_netfilter overlay
       - name: Start the ${{ matrix.distro }} host
         working-directory: examples/local

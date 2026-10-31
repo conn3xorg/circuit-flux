@@ -8,7 +8,7 @@ It's for the cluster you've already built with [circuit-k3s](https://github.com/
 
 ```hcl
 module "k3s" {
-  source = "github.com/conn3xorg/circuit-k3s?ref=v0.1.3"
+  source = "github.com/conn3xorg/circuit-k3s?ref=v0.1.4"
 
   servers              = { cp1 = "203.0.113.10" }
   token                = var.k3s_token
@@ -16,7 +16,7 @@ module "k3s" {
 }
 
 module "flux" {
-  source     = "github.com/conn3xorg/circuit-flux?ref=v0.1.0"
+  source     = "github.com/conn3xorg/circuit-flux?ref=v0.1.1"
   depends_on = [module.k3s]
 
   server               = "203.0.113.10"
@@ -93,7 +93,7 @@ After that Flux does the rest. It checks the repository every `interval` and app
 
 Flux supports the three newest Kubernetes minors. v2.10.0 asks for 1.35.2, 1.36.1 or 1.37.0 at the least, and circuit-k3s's default, v1.37.1+k3s1, is in range. `k3s_minors` checks the minor only, so stay on a patch at or above those.
 
-[conn3xorg/circuit-k3s#7](https://github.com/conn3xorg/circuit-k3s/issues/7), where k3s can skip installing Traefik, doesn't affect this circuit. Flux uses neither Traefik nor k3s's Helm controller, and needs no ingress: its controllers call out to your Git server. If your manifests bring an `Ingress` that expects Traefik, that issue is still yours to watch for.
+Flux uses neither Traefik nor k3s's Helm controller, and needs no ingress: its controllers call out to your Git server. If your manifests bring an `Ingress` that expects Traefik, that issue is still yours to watch for.
 
 ### What it doesn't do
 
@@ -140,7 +140,7 @@ Set `flux_version`, `install_sha256` and `k3s_minors` together, reading the supp
 
 ## Requirements
 
-Requires Conn3x v0.6.9 or later, a k3s server on a Kubernetes version Flux supports, outbound HTTPS to `github.com` from that server and to `ghcr.io` from the cluster, and a route from the cluster to your Git server.
+Requires Conn3x v0.6.9 or later, circuit-k3s v0.1.4 or later if that's what built your cluster, a k3s server on a Kubernetes version Flux supports, outbound HTTPS to `github.com` from that server and to `ghcr.io` from the cluster, and a route from the cluster to your Git server.
 
 ## Tested on
 
