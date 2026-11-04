@@ -4,7 +4,7 @@
 # git_key. No Git hosting account is involved. Run it after up.sh.
 set -eu
 cd "$(dirname "$0")"
-name=${NAME:-circuit-flux}
+name=${CONTAINER_NAME:-circuit-flux}
 podman=${PODMAN:-podman}
 # The address the pods reach the host on, not the forwarded one on 127.0.0.1.
 host=$($podman inspect -f '{{.NetworkSettings.IPAddress}}' "$name")
